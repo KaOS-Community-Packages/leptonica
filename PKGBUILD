@@ -1,28 +1,27 @@
 pkgname=leptonica
-pkgver=1.72
+pkgver=1.79.0
 pkgrel=1
-pkgdesc="Library for image processing and image analysis"
+pkgdesc="Software that is broadly useful for image processing and image analysis applications"
 arch=('x86_64')
-url="http://www.${pkgname}.com/"
-license=('GPL3')
-makedepends=('autoconf')
-source=("http://www.${pkgname}.com/source/${pkgname}-${pkgver}.tar.gz")
-http://www.leptonica.com/source/leptonica-1.72.tar.gz
-sha512sums=('8cb7acade68fbd9239dee4c24c5f35fd4cbb4db9e36fbf596478bd1e4635e45034664a16cec21c084091fbad64b4b6e78a4cb43fda8d0c0fc32f55a8cbf110d2')
+url="http://www.leptonica.com/"
+license=('custom')
+depends=('giflib' 'libjpeg-turbo' 'libpng' 'libtiff' 'zlib' 'libwebp')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/DanBloomberg/leptonica/archive/$pkgver.tar.gz")
+sha256sums=('bf9716f91a4844c2682a07ef21eaf68b6f1077af1f63f27c438394fd66218e17')
 
-build() {
-        cd "$pkgname-$pkgver"
-        ./configure --prefix=/usr
-        make
+prepare() {
+  cd "$srcdir"/leptonica-${pkgver}
+  ./autogen.sh
 }
 
-# Uncomment next lines to enable make check step
-# check() {
-#         cd "$pkgname-$pkgver"
-#         make -j1 check
-# }
+build() {
+  cd "$srcdir"/leptonica-${pkgver}
+  ./configure --prefix=/usr
+  make
+}
 
 package() {
-        cd "$pkgname-$pkgver"
-        make DESTDIR="$pkgdir/" install
+  cd "$srcdir"/leptonica-${pkgver}
+  make DESTDIR="$pkgdir" install
+  install -D leptonica-license.txt "$pkgdir"/usr/share/licenses/leptonica/leptonica-license.txt
 }
